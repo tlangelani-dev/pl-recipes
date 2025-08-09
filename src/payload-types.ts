@@ -69,14 +69,22 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    roles: Role;
+    dietaryRequirements: DietaryRequirement;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    dietaryRequirements: {
+      users: 'users';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
+    dietaryRequirements: DietaryRequirementsSelect<false> | DietaryRequirementsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -119,6 +127,11 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  firstname?: string | null;
+  lastname?: string | null;
+  role?: (number | null) | Role;
+  dietaryRequirements?: (number | DietaryRequirement)[] | null;
+  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -136,6 +149,32 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: number;
+  name?: string | null;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dietaryRequirements".
+ */
+export interface DietaryRequirement {
+  id: number;
+  name: string;
+  users?: {
+    docs?: (number | User)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -170,6 +209,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: number | Role;
+      } | null)
+    | ({
+        relationTo: 'dietaryRequirements';
+        value: number | DietaryRequirement;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -218,6 +265,11 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  firstname?: T;
+  lastname?: T;
+  role?: T;
+  dietaryRequirements?: T;
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -252,6 +304,26 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dietaryRequirements_select".
+ */
+export interface DietaryRequirementsSelect<T extends boolean = true> {
+  name?: T;
+  users?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

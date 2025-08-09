@@ -7,7 +7,33 @@ export const Users: CollectionConfig = {
   },
   auth: true,
   fields: [
-    // Email added by default
-    // Add more fields as needed
+    {
+      name: 'firstname',
+      label: 'First Name',
+      type: 'text',
+    },
+    {
+      name: 'lastname',
+      label: 'Last Name',
+      type: 'text',
+    },
+    {
+      name: 'role',
+      label: 'Role',
+      type: 'relationship',
+      relationTo: 'roles',
+    },
+    {
+      name: 'dietaryRequirements',
+      label: 'Dietary Requirements',
+      type: 'relationship',
+      relationTo: 'dietaryRequirements',
+      hasMany: true,
+    },
+    {
+      name: 'isActive',
+      label: 'Is Active',
+      type: 'checkbox',
+    },
   ],
 }
